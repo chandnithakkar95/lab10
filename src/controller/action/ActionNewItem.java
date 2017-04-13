@@ -15,6 +15,6 @@ public class ActionNewItem  implements Action {
             request.setAttribute("cartitem", null);
             request.setAttribute("update_action", "insert");     
             System.out.println("hiii");
-            return "book_entry.jsp";
+            return "cart_view.jsp";
     }
 }

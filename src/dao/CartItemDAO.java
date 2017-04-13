@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import util.InSufficientStock;
 import Bean.Cart;
 import Bean.CartItem;
@@ -43,6 +45,35 @@ public class CartItemDAO {
 		catch(SQLException e1) {
 			throw new DAOException(e1.getMessage());
 		}
+	}
+	public int getLastShoppingItems() throws DAOException {
+		String qry="select * from cart_item;";
+		//ArrayList<InventoryItem> item;
+		CartItem items[]=new CartItem[0];
+		ArrayList<CartItem> im=new ArrayList<CartItem>();
+		Integer[] itmindex=new Integer[0];
+		ArrayList<Integer> titmindex=new ArrayList<Integer>();
+		int tmp; 
+		try {
+			
+			Statement stmt=conn.createStatement();
+			ResultSet rs=stmt.executeQuery(qry);
+			int i=0;
+			if(!rs.next()) {
+			return 1;
+			}else {
+				while (rs.next()) {
+					titmindex.add(rs.getInt(1));
+				}
+				itmindex=titmindex.toArray(itmindex);
+				Arrays.sort(itmindex);
+				tmp=itmindex[itmindex.length-1];
+			}
+		}catch(SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+		items=im.toArray(items);
+		return tmp;
 	}
 	/*public void InsertItems(InventoryItem[] items)
 			throws ItemExists, DAOException {		//should commit only if all items are successfully inserted otherwise should rollback
@@ -104,6 +135,7 @@ public class CartItemDAO {
 			throw new DAOException(e.getMessage());
 		}
 	}
+
 	public void upDateItems(InventoryItem[] items)
 			throws ItemNotFound, DAOException {
 		//should commit only if all items are updated otherwise rollback

@@ -1,47 +1,58 @@
 package controller.action;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import Bean.Cart;
+import Bean.CartItem;
 import Bean.InventoryItem;
 import controller.Action;
+import dao.CartDAO;
+import dao.CartItemDAO;
 import dao.InventoryDAO;
 import util.DAOException;
 import util.ItemExists;
+import util.ItemNotFound;
 
 public class ActionInsert implements Action
 {
 	@Override
 	public String perform(HttpServletRequest request, HttpServletResponse response) {
-		String isbn = request.getParameter("item_code");
-		String title = request.getParameter("name");
-		int qty =Integer.parseInt(request.getParameter("qty"));
-		int min_qty= Integer.parseInt(request.getParameter("min_qty"));
-		double price = Double.parseDouble(request.getParameter("price"));
+		String isbn = request.getParameter("itmCode");
 		
-		String tempcate []= request.getParameterValues("cate_id");
-		
-		int cate_id=Integer.parseInt(tempcate[0]);
 		InventoryDAO items = null;
+		CartDAO cartdao = null;
+		CartItemDAO cartitemdao;
+		CartItem[] cia=new CartItem[0];
+		Cart c;
+		//ArrayList<CartItem> cial=new ArrayList<CartItem>();
+		HttpSession session=request.getSession();
 		try {
+			cartitemdao=new CartItemDAO();
+			cartdao=new CartDAO();
 			items = new InventoryDAO();
-		} catch (DAOException e1) {
+			InventoryItem item;
+			item=items.getItem(Integer.parseInt(isbn));
+			c=(Cart)session.getAttribute("cart");
+			//cartdao.addCartItem(/*cartitemdao.getCartItem(item.getCode())*/);
+			cartitemdao.addCartItem(new CartItem(cartitemdao.getLastShoppingItems()+1, Integer.parseInt(isbn),c.getCart()));
+			//items.InsertItem(item);
+			cia=cartitemdao.getCartItems(c.getCart());
+			session.setAttribute("cartitems",cia);
+		} catch (DAOException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}catch (NumberFormatException | ItemNotFound e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		InventoryItem item = new InventoryItem(Integer.parseInt(isbn), title, qty, min_qty, price, cate_id);
-		
-		InventoryItem[] tmpitem=null ;
-		try {
-			//
-			items.InsertItem(item);
-		
-			tmpitem = items.getItems();
-			
-		} catch (ItemExists | DAOException e) {
+		} catch (ItemExists e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		request.setAttribute("items", tmpitem);
-		return "catalogue_view.jsp";        
+		}		
+		//request.setAttribute("items", tmpitem);
+		return "cart_view.jsp";        
 	}
 }

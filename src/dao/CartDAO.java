@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import util.InSufficientStock;
 import Bean.Cart;
 import Bean.CartItem;
@@ -163,29 +165,29 @@ public class CartDAO {
 		}
 		return item;
 	}
-	/*public InventoryItem[] getItems() throws DAOException {
-		String qry="select * from inventory_item;";
+	public int getLastShopping() throws DAOException {
+		String qry="select * from shopping_cart;";
 		//ArrayList<InventoryItem> item;
-		InventoryItem items[]=new InventoryItem[0];
-		ArrayList<InventoryItem> im=new ArrayList<InventoryItem>();
+		Cart items[]=new Cart[0];
+		ArrayList<Cart> im=new ArrayList<Cart>();
+		Integer[] itmindex=new Integer[0];
+		ArrayList<Integer> titmindex=new ArrayList<Integer>();
+		int tmp; 
 		try {	
 			Statement stmt=conn.createStatement();
 			ResultSet rs=stmt.executeQuery(qry);
 			int i=0;
-			while(rs.next()) {
-				im.add(new InventoryItem(
-						rs.getInt("itm_code"),
-						rs.getString("item_decription"),
-						rs.getInt("qty"),rs.getInt("min_stock"),
-						rs.getDouble("cost"),rs.getInt("cate_id")
-						));
+			while (rs.next()) {
+				titmindex.add(rs.getInt(1));
 			}
-
+			itmindex=titmindex.toArray(itmindex);
+			Arrays.sort(itmindex);
+			tmp=itmindex[itmindex.length-1];
 		}catch(SQLException e) {
 			throw new DAOException(e.getMessage());
 		}
 		items=im.toArray(items);
-		return items;
+		return tmp;
 	}
 	public InventoryItem[] getItemsCategory(int cate_id) throws DAOException {
 		String qry="select * from inventory_item where cate_id="+cate_id+";";
@@ -211,7 +213,7 @@ public class CartDAO {
 		items=im.toArray(items);
 		return items;
 	}
-	public void addStock(int item_code, int qty) throws ItemNotFound, DAOException {
+	/*public void addStock(int item_code, int qty) throws ItemNotFound, DAOException {
 		InventoryItem item=getItem(item_code);
 		item.addStock(qty);
 		updateItem(item);
@@ -221,7 +223,7 @@ public class CartDAO {
 		item.withdrawStock(qty);
 		updateItem(item);
 	}
-	public InventoryItem[] itemsUnderStock() throws DAOException{
+	*//*public InventoryItem[] itemsUnderStock() throws DAOException{
 		InventoryItem[] items=getItems();
 		ArrayList<InventoryItem> itemsUStock=new ArrayList<>();
 		InventoryItem[] itemsUnderStock=new InventoryItem[0];

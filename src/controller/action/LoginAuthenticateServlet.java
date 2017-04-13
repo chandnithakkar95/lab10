@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.Action;
+import dao.CartDAO;
+import dao.CartItemDAO;
 import dao.UserDAO;
+import Bean.Cart;
 import Bean.User;
 import util.DAOException;
 import util.UserNotFound;
@@ -61,7 +64,17 @@ public class LoginAuthenticateServlet implements Action{
 			}
 			HttpSession session=request.getSession();
 			session.setAttribute("username", uname);
-			
+			CartDAO cartdao = null;
+			CartItemDAO cartitemdao;
+			Cart cart = null;
+			try {
+				System.out.println("doit man");
+				cart = new Cart(cartdao.getLastShopping()+1,(String) session.getAttribute("username"));
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			session.setAttribute("cart",cart);
 		}
 		if(submit.matches("signup")) {
 			//System.out.println("else");

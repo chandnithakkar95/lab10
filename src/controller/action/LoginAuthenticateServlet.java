@@ -17,6 +17,7 @@ import dao.UserDAO;
 import Bean.Cart;
 import Bean.User;
 import util.DAOException;
+import util.ItemExists;
 import util.UserNotFound;
 import util.UserExist;
 
@@ -68,9 +69,12 @@ public class LoginAuthenticateServlet implements Action{
 			CartItemDAO cartitemdao;
 			Cart cart = null;
 			try {
-				System.out.println("doit man");
-				cart = new Cart(cartdao.getLastShopping()+1,(String) session.getAttribute("username"));
-			} catch (DAOException e) {
+				cartdao=new CartDAO();
+				
+				//System.out.println("doit man");
+				cart = new Cart(1+cartdao.getLastShopping(),(String) session.getAttribute("username"));
+			cartdao.addCart(cart);
+			} catch (DAOException | ItemExists e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

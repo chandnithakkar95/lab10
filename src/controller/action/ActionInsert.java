@@ -19,12 +19,15 @@ import util.ItemNotFound;
 
 public class ActionInsert implements Action
 {
+	private CartDAO cartdao;
+	private InventoryItem item;
+
 	@Override
 	public String perform(HttpServletRequest request, HttpServletResponse response) {
 		String isbn = request.getParameter("itmCode");
 		
 		InventoryDAO items = null;
-		CartDAO cartdao = null;
+		cartdao = null;
 		CartItemDAO cartitemdao;
 		CartItem[] cia=new CartItem[0];
 		Cart c;
@@ -34,7 +37,6 @@ public class ActionInsert implements Action
 			cartitemdao=new CartItemDAO();
 			cartdao=new CartDAO();
 			items = new InventoryDAO();
-			InventoryItem item;
 			item=items.getItem(Integer.parseInt(isbn));
 			c=(Cart)session.getAttribute("cart");
 			//cartdao.addCartItem(/*cartitemdao.getCartItem(item.getCode())*/);

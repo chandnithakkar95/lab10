@@ -55,19 +55,22 @@ public class CartItemDAO {
 		ArrayList<Integer> titmindex=new ArrayList<Integer>();
 		int tmp; 
 		try {
-			
+
 			Statement stmt=conn.createStatement();
 			ResultSet rs=stmt.executeQuery(qry);
 			int i=0;
 			if(!rs.next()) {
-			return 1;
+
+				return 0;
 			}else {
 				while (rs.next()) {
 					titmindex.add(rs.getInt(1));
 				}
 				itmindex=titmindex.toArray(itmindex);
 				Arrays.sort(itmindex);
-				tmp=itmindex[itmindex.length-1];
+				System.out.println(itmindex.length);
+				 tmp=itmindex[itmindex.length];
+				
 			}
 		}catch(SQLException e) {
 			throw new DAOException(e.getMessage());

@@ -42,7 +42,7 @@
                 Category category=catdao.getcategory(items[i].getCateId());
                 %>
                 <td><%= category.getCategory() %></td>
-				<td><a href="<%=application.getContextPath() %>/Controller?action=remove&itmCode=<%= itmCode %>">add to cart</a></td>
+				<td><a href="<%=application.getContextPath() %>/Controller?action=newitem&itmCode=<%= itmCode %>">add to cart</a></td>
             </tr>                
             <%}
         }catch(NullPointerException e){

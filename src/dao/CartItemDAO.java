@@ -31,18 +31,18 @@ public class CartItemDAO {
 			throws ItemExists, DAOException {
 		String qry;
 		System.out.println("hiii");
-		
-			try {
-				
-				Statement stmt=conn.createStatement();			
-				int n;
-				qry= "INSERT INTO cart_item(cart_item_id,inventory_item_id,Quantity,cart_id) VALUES("
-						+crtItm.getCartItemCode()+ ","+crtItm.getInventoryItemCode()+","+crtItm.getQuantity()+","+crtItm.getCart()+");";
-				n = stmt.executeUpdate(qry);
-			}
-			catch(SQLException e1) {
-				throw new DAOException(e1.getMessage());
-			}
+
+		try {
+
+			Statement stmt=conn.createStatement();			
+			int n;
+			qry= "INSERT INTO cart_item(cart_item_id,inventory_item_id,Quantity,cart_id) VALUES("
+					+crtItm.getCartItemCode()+ ","+crtItm.getInventoryItemCode()+","+crtItm.getQuantity()+","+crtItm.getCart()+");";
+			n = stmt.executeUpdate(qry);
+		}
+		catch(SQLException e1) {
+			throw new DAOException(e1.getMessage());
+		}
 	}
 	/*public void InsertItems(InventoryItem[] items)
 			throws ItemExists, DAOException {		//should commit only if all items are successfully inserted otherwise should rollback
@@ -179,88 +179,13 @@ public class CartItemDAO {
 						rs.getInt(3),
 						rs.getInt(4)));
 			}
-
 		}catch(SQLException e) {
 			throw new DAOException(e.getMessage());
 		}
 		items=im.toArray(items);
 		return items;
 	}
-	public InventoryItem[] getItemsCategory(int cate_id) throws DAOException {
-		String qry="select * from inventory_item where cate_id="+cate_id+";";
-		//ArrayList<InventoryItem> item;
-		InventoryItem items[]=new InventoryItem[0];
-		ArrayList<InventoryItem> im=new ArrayList<InventoryItem>();
-		try {	
-			Statement stmt=conn.createStatement();
-			ResultSet rs=stmt.executeQuery(qry);
-			int i=0;
-			while(rs.next()) {
-				im.add(new InventoryItem(
-						rs.getInt("itm_code"),
-						rs.getString("item_decription"),
-						rs.getInt("qty"),rs.getInt("min_stock"),
-						rs.getDouble("cost"),rs.getInt("cate_id")
-						));
-			}
 
-		}catch(SQLException e) {
-			throw new DAOException(e.getMessage());
-		}
-		items=im.toArray(items);
-		return items;
-	}
-	public void addStock(int item_code, int qty) throws ItemNotFound, DAOException {
-		InventoryItem item=getItem(item_code);
-		item.addStock(qty);
-		updateItem(item);
-	}
-	public void withdrawStock(int item_code, int qty) throws ItemNotFound, InSufficientStock, DAOException {
-		InventoryItem item=getItem(item_code);
-		item.withdrawStock(qty);
-		updateItem(item);
-	}
-	public InventoryItem[] itemsUnderStock() throws DAOException{
-		InventoryItem[] items=getItems();
-		ArrayList<InventoryItem> itemsUStock=new ArrayList<>();
-		InventoryItem[] itemsUnderStock=new InventoryItem[0];
-		for(int i=0;i<items.length;i++) {
-			if(items[i].isUnderStock()) {
-				itemsUStock.add(items[i]);
-			}
-		}
-		itemsUnderStock=itemsUStock.toArray(itemsUnderStock);
-		return itemsUnderStock;
-	}*/
-/*	public void deleteItems(int[] items_codes) throws ItemNotFound, DAOException {
-		try {
-			conn.setAutoCommit(false);
-			for(int i=0;i<items_codes.length;i++) {
-				String sql="delete from inventory_item where itm_code="+items_codes[i];
-				int n=0;
-				Statement stmt=conn.createStatement();
-				n=stmt.executeUpdate(sql);
-			}
-		}
-		catch(SQLException e) {
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			throw new DAOException(e.getMessage());
-		}
-		finally {
-			try {
-				conn.setAutoCommit(true);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-	}*/
 	public void deleteItem(int cartId) throws ItemNotFound, DAOException {
 		String sql="delete from shopping_cart where cart_idt="+cartId;
 		int n=0;
@@ -277,14 +202,22 @@ public class CartItemDAO {
 	public int getPage_length() {
 		return page_length;
 	}
-	/*public double totalInventoryCost() throws DAOException {
-		InventoryItem[] items=getc();
+	public double totalInventoryCost(int cartId) throws DAOException {
+		CartItem[] items=getCartItems(cartId);
+		InventoryDAO dao=new InventoryDAO();
 		double cost=0.0;
 		for(int i=0;i<items.length;i++) {
-			cost+=items[i].getCost()*items[i].getStock();
+			InventoryItem invitem;
+			try {
+				invitem = dao.getItem(items[i].getInventoryItemCode());
+				cost+=items[i].getQuantity()*invitem.getCost();
+			} catch (ItemNotFound e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return cost;
-	}*/
+	}
 	public Cart[] getPaginatedItems(int page_no) throws DAOException {
 		ArrayList<Cart> item_list = new ArrayList<Cart>();
 		Cart[] i=new Cart[0];
@@ -309,5 +242,4 @@ public class CartItemDAO {
 		return i;
 	}	
 	private int page_length = 20;
-
 }	

@@ -176,22 +176,11 @@ public class CartDAO {
 		try {	
 			Statement stmt=conn.createStatement();
 			ResultSet rs=stmt.executeQuery(qry);
-			int i=0;
-			if(!rs.next()) {
-				return 0;	
-			}else {
-				while (rs.next()) {
-					titmindex.add(rs.getInt(1));
-				}
-				itmindex=titmindex.toArray(itmindex);
-				Arrays.sort(itmindex);
-				tmp=itmindex[itmindex.length-1];
-				System.out.println(tmp);			}
 		}catch(SQLException e) {
 			throw new DAOException(e.getMessage());
 		}
 		items=im.toArray(items);
-		return tmp;
+		return items.length+1;
 	}
 	/*public InventoryItem[] getItemsCategory(int cate_id) throws DAOException {
 		String qry="select * from inventory_item where cate_id="+cate_id+";";

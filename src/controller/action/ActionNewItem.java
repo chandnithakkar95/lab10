@@ -13,7 +13,7 @@ public class ActionNewItem  implements Action {
             HttpServletResponse response) {
     	//System.out.
             request.setAttribute("cartitem", null);
-            request.setAttribute("update_action", "insert");     
+          //  request.setAttribute("update_action", "insert");     
             System.out.println("hiii");
             return "cartpro.jsp";
     }

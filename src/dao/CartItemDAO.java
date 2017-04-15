@@ -40,6 +40,7 @@ public class CartItemDAO {
 			int n;
 			qry= "INSERT INTO cart_item(cart_item_id,inventory_item_id,Quantity,cart_id) VALUES("
 					+crtItm.getCartItemCode()+ ","+crtItm.getInventoryItemCode()+","+crtItm.getQuantity()+","+crtItm.getCart()+");";
+			System.out.println(qry);
 			n = stmt.executeUpdate(qry);
 		}
 		catch(SQLException e1) {
@@ -55,28 +56,13 @@ public class CartItemDAO {
 		ArrayList<Integer> titmindex=new ArrayList<Integer>();
 		int tmp; 
 		try {
-
 			Statement stmt=conn.createStatement();
 			ResultSet rs=stmt.executeQuery(qry);
-			int i=0;
-			if(!rs.next()) {
-
-				return 0;
-			}else {
-				while (rs.next()) {
-					titmindex.add(rs.getInt(1));
-				}
-				itmindex=titmindex.toArray(itmindex);
-				Arrays.sort(itmindex);
-				System.out.println(itmindex.length);
-				 tmp=itmindex[itmindex.length];
-				
-			}
 		}catch(SQLException e) {
 			throw new DAOException(e.getMessage());
 		}
 		items=im.toArray(items);
-		return tmp;
+		return items.length+1;
 	}
 	/*public void InsertItems(InventoryItem[] items)
 			throws ItemExists, DAOException {		//should commit only if all items are successfully inserted otherwise should rollback

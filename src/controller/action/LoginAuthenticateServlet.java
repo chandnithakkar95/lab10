@@ -57,8 +57,10 @@ public class LoginAuthenticateServlet implements Action{
 				out.write("null pointer");
 			}
 			catch(UserNotFound e) {
+				
 				out.write("user name or password is incorrect");
-				page="LOGIN.jsp";
+				return "LOGIN.jsp";
+				
 			} catch(ClassNotFoundException|DAOException e) {
 				// TODO Auto-generated catch block
 				out.write("Connection problem");

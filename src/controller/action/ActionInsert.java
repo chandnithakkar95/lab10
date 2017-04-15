@@ -25,13 +25,13 @@ public class ActionInsert implements Action
 	@Override
 	public String perform(HttpServletRequest request, HttpServletResponse response) {
 		String isbn = request.getParameter("itmCode");
-		
+
 		InventoryDAO items = null;
 		cartdao = null;
 		CartItemDAO cartitemdao;
 		CartItem[] cia=new CartItem[0];
 		Cart c;
-		//ArrayList<CartItem> cial=new ArrayList<CartItem>();
+		
 		HttpSession session=request.getSession();
 		try {
 			cartitemdao=new CartItemDAO();
@@ -39,22 +39,18 @@ public class ActionInsert implements Action
 			items = new InventoryDAO();
 			item=items.getItem(Integer.parseInt(isbn));
 			c=(Cart)session.getAttribute("cart");
-			//cartdao.addCartItem(/*cartitemdao.getCartItem(item.getCode())*/);
+			System.out.println(c);
 			cartitemdao.addCartItem(new CartItem(cartitemdao.getLastShoppingItems()+1, Integer.parseInt(isbn),c.getCart()));
 			//items.InsertItem(item);
 			cia=cartitemdao.getCartItems(c.getCart());
 			session.setAttribute("cartitems",cia);
 		} catch (DAOException e3) {
-			// TODO Auto-generated catch block
 			e3.printStackTrace();
 		}catch (NumberFormatException | ItemNotFound e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (ItemExists e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-		//request.setAttribute("items", tmpitem);
 		return "cart_view.jsp";        
 	}
 }
